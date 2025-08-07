@@ -42,7 +42,7 @@ npm run dev
 
 - **Filtro Flotante Moderno** en esquina inferior izquierda
 - **Transiciones Animadas** entre páginas
-- **Diseño Responsive** (Mobile First)
+- **Diseño Responsive** 
 - **Persistencia** de favoritos en localStorage
 
 ## 📌 Características Principales
