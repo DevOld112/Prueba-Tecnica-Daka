@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  box-sizing: border-box;
+  font-size: 72.5%
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* Globales */
+body {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+ .pagination-container {
+    display: flex;
+
+    column-gap: 10px;
+  }
+
+  .paginate-buttons {
+    height: 40px;
+
+    width: 40px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    background-color: rgb(242, 242, 242);
+
+    border: 1px solid rgb(217, 217, 217);
+
+    color: black;
+  }
+
+  .paginate-buttons:hover {
+    background-color: #d8d8d8;
+  }
+
+  .active-page {
+    background-color: #3498db;
+
+    border: 1px solid #3498db;
+
+    color: white;
+  }
+
+  .active-page:hover {
+    background-color: #2988c8;
+  }
+
+  .page-transition-move {
+    transition: transform 0.4s ease;
+    }
+
+    .page-transition-leave-active {
+    position: absolute;
+    width: calc(33.33% - 1rem);
+    transition: all 0.4s ease;
+    }
+
+    .page-transition-enter-active {
+    transition: all 0.4s ease 0.4s; 
+    }
+
+    .page-transition-enter-from,
+    .page-transition-leave-to {
+    opacity: 0;
+    transform: translateY(20px);
+    }
+
+    .page-transition-leave-to {
+    transform: translateY(-20px);
+    }
+
+    .grid {
+    position: relative;
+    }
+
+
+    .fade-enter-active,
+    .fade-leave-active {
+    transition: opacity 0.3s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+    opacity: 0;
+    }
+
+    .fade-slide-enter-active {
+    transition: all 0.3s ease 0.2s;
+    }
+
+    .fade-slide-leave-active {
+    transition: all 0.3s ease;
+    }
+
+    .fade-slide-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+    }
+
+    .fade-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+    }
