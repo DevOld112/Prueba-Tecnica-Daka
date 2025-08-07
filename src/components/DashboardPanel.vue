@@ -75,7 +75,7 @@ const { products, averagePrice, categories, exchangeCurrency2 } = storeToRefs(pr
                         <tspan x="12" dy="0">VES</tspan>
                     </text>
                     
-                    <!-- Líneas decorativas (opcional) -->
+                    <!-- Líneas decorativas -->
                     <line x1="8" y1="8" x2="16" y2="16" stroke="currentColor" stroke-width="1" opacity="0.3"/>
                     <line x1="16" y1="8" x2="8" y2="16" stroke="currentColor" stroke-width="1" opacity="0.3"/>
                     </svg>
