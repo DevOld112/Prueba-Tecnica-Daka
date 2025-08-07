@@ -1,18 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { Category, DolarBCV, Products } from '@/types'
+import type { Category, DolarBCV, Monitor, Products } from '@/types'
 import { getCategories, getProducts } from '@/api/ProductsApi'
-import { exchangeRate } from '@/helpers'
+import { exchangeRate, testExchange } from '@/helpers'
 
 export const useProductStore = defineStore('product', () => {
   // Variables Reactivas
   const allProducts = ref<Products[]>([]) 
+  const favorites = ref<Products[]>([])
   const categories = ref<Category[]>([])
   const isLoading = ref(true)
   const error = ref<Error | null>(null)
   const currentPage = ref(1)
   const itemsPerPage = ref(5)
   const exchangeCurrency = ref<DolarBCV>()
+  const exchangeCurrency2 = ref <Monitor>()
   
   // Filtros
   const filterCategory = ref<string>('')
@@ -37,7 +39,8 @@ export const useProductStore = defineStore('product', () => {
   })
 
   // Getters
-  const products = computed(() => filteredProducts.value) 
+  const products = computed(() => filteredProducts.value)
+  const getFavorites = computed(() => favorites.value)
   const totalItems = computed(() => filteredProducts.value.length)
   const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
   const showExchange = computed(() => exchangeCurrency.value)
@@ -69,6 +72,16 @@ export const useProductStore = defineStore('product', () => {
     currentPage.value = 1
   }
 
+  const buttonFavorites = (product: Products) => {
+    if(!favorites.value.includes(product)){
+      favorites.value.push(product)
+    }else {
+      favorites.value = favorites.value.filter(p => p.id !== product.id);
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites.value));
+  }
+
   const loadProducts = async () => {
     try {
       isLoading.value = true
@@ -76,6 +89,7 @@ export const useProductStore = defineStore('product', () => {
       allProducts.value = await getProducts()
       categories.value = await getCategories()
       exchangeCurrency.value = await exchangeRate()
+      exchangeCurrency2.value = await testExchange()
     } catch (err) {
       error.value = err as Error
       console.error("Error loading products:", err)
@@ -84,8 +98,18 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+    const loadFavorites = (): void => {
+    const saved = localStorage.getItem('favorites');
+    if (saved) {
+      favorites.value = JSON.parse(saved) as Products[];
+    }
+  };
+
   // Resto de acciones...
-  const initialize = async () => await loadProducts()
+  const initialize = async () =>{ 
+    await loadProducts()
+    loadFavorites()
+  }
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page
@@ -114,6 +138,7 @@ const prevPage = () => {
     // Variables reactivas
     allProducts, 
     products,   
+    favorites,
     categories,
     isLoading,
     error,
@@ -123,6 +148,7 @@ const prevPage = () => {
     minPriceFilter,
     maxPriceFilter,
     exchangeCurrency,
+    exchangeCurrency2,
     
     // Getters
     totalItems,
@@ -132,6 +158,7 @@ const prevPage = () => {
     isLastPage: computed(() => currentPage.value === totalPages.value),
     averagePrice,
     showExchange,
+    getFavorites,
     
     // Acciones
     loadProducts,
@@ -141,6 +168,7 @@ const prevPage = () => {
     prevPage,
     refresh,
     applyFilters,
-    resetFilters
+    resetFilters,
+    buttonFavorites
   }
 })

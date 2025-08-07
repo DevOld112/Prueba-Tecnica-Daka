@@ -6,11 +6,7 @@ import { storeToRefs } from 'pinia';
 import { formatPrice } from '@/helpers';
 
 const productStore = useProductStore();
-const { products, averagePrice, categories, exchangeCurrency } = storeToRefs(productStore);
-
-onMounted(async() => {
-    console.log(testExchange())
-})
+const { products, averagePrice, categories, exchangeCurrency2 } = storeToRefs(productStore);
 
 </script>
 
@@ -55,9 +51,11 @@ onMounted(async() => {
                     <div>
                         <p class="text-sm font-medium text-green-800">Tasa Dolar BCV</p>
                             <p class="text-2xl font-bold text-gray-800 mt-1">
-                                {{ exchangeCurrency ? formatPrice(exchangeCurrency.promedio) : '--,--' }} BSF
+                                {{ exchangeCurrency2 ? formatPrice(exchangeCurrency2.price) : '--,--' }} BSF
                             </p>
                     </div>
+
+                    
                     <div class="bg-green-100 p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" viewBox="0 0 24 24">
                     <!-- Círculo con borde -->

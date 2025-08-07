@@ -11,20 +11,37 @@ const props = defineProps<{
 }>();
 
 const productStore = useProductStore();
-const { exchangeCurrency } = storeToRefs(productStore);
+const { exchangeCurrency2, getFavorites } = storeToRefs(productStore);
 
 const translatedCategory = computed(() => translateCategory(props.product.category));
 
+const isFavorite = computed(() => 
+    getFavorites.value.some(fav => fav.id === props.product.id)
+);
+
 const formatBsFPrice = (priceUSD: number) => {
-    if (!exchangeCurrency.value?.promedio) return '--,--';
-    const total = exchangeCurrency.value.promedio * priceUSD;
+    if (!exchangeCurrency2.value?.price) return '--,--';
+    const total = exchangeCurrency2.value.price * priceUSD;
     return formatPrice(total);
 };
+
+const toggleFavorite = () => {
+    productStore.buttonFavorites(props.product);
+}
 </script>
 
-
 <template>
-    <article class="flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-emerald-100 hover:scale-[1.02]">
+    <article class="flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-emerald-100 hover:scale-[1.02] relative">
+
+        
+        <button 
+            @click.stop="toggleFavorite"
+            class="absolute top-2 right-2 p-2 bg-white/80 rounded-full z-10 hover:bg-gray-100 transition-colors"
+            aria-label="Añadir a favoritos"
+        >
+            <span v-if="isFavorite" class="text-red-500 text-xl">❤️</span>
+            <span v-else class="text-gray-300 text-xl hover:text-red-300">🤍</span>
+        </button>
 
         <div class="h-48 w-full flex items-center justify-center bg-white p-4">
             <img 
@@ -35,12 +52,10 @@ const formatBsFPrice = (priceUSD: number) => {
             />
         </div>
 
-
         <div class="flex flex-col flex-grow p-4">
             <div class="flex justify-between items-start mb-3 min-h-[3.5rem]">
                 <h3 class="font-bold text-emerald-800 line-clamp-2 flex-grow pr-2">{{ product.title }}</h3>
                 
-
                 <div class="flex flex-col items-end ml-2 min-w-[110px]">
                     <div class="flex items-baseline justify-end">
                         <span class="text-xs text-gray-500 mr-1">USD</span>

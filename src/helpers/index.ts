@@ -1,4 +1,4 @@
-import { Category, type DolarBCV } from "@/types";
+import { Category, type DolarBCV, type Monitor } from "@/types";
 
 type TranslationDictionary = {
   [key in Category]: string;
@@ -31,7 +31,7 @@ export async function exchangeRate(): Promise<DolarBCV> {
   return data;
 }
 
-export async function testExchange() {
+export async function testExchange(): Promise<Monitor> {
   const response = await fetch('https://pydolarve.org/api/v2/tipo-cambio')
 
   const data = await response.json()

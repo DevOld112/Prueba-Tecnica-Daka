@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Globales */
+
 html {
   box-sizing: border-box;
   font-size: 72.5%
@@ -11,12 +13,15 @@ html {
   box-sizing: inherit;
 }
 
-/* Globales */
+
 body {
   font-size: 1.2rem;
   line-height: 1.5;
   margin: 0 auto;
 }
+
+
+/* Clases para las paginaciones */ 
 
  .pagination-container {
     display: flex;
@@ -56,59 +61,29 @@ body {
     background-color: #2988c8;
   }
 
-  .page-transition-move {
-    transition: transform 0.4s ease;
-    }
+ /* Transiciones al cambiar pagina de los productos */
+.product-transition-move {
+  transition: transform 0.4s ease;
+}
 
-    .page-transition-leave-active {
-    position: absolute;
-    width: calc(33.33% - 1rem);
-    transition: all 0.4s ease;
-    }
+.product-transition-leave-active {
+  position: absolute;
+  width: calc(33.33% - 0.1rem);
+  transition: all 0.4s ease;
+}
 
-    .page-transition-enter-active {
-    transition: all 0.4s ease 0.4s; 
-    }
+.product-transition-enter-active {
+  transition: all 0.4s ease 0.4s; 
+}
 
-    .page-transition-enter-from,
-    .page-transition-leave-to {
-    opacity: 0;
-    transform: translateY(20px);
-    }
+.product-transition-enter-from,
+.product-transition-leave-to {
+  opacity: 0;
+  transform: translateY(50px);
+}
 
-    .page-transition-leave-to {
-    transform: translateY(-20px);
-    }
-
-    .grid {
-    position: relative;
-    }
+.product-transition-leave-to {
+  transform: translateY(-50px);
+}
 
 
-    .fade-enter-active,
-    .fade-leave-active {
-    transition: opacity 0.3s ease;
-    }
-
-    .fade-enter-from,
-    .fade-leave-to {
-    opacity: 0;
-    }
-
-    .fade-slide-enter-active {
-    transition: all 0.3s ease 0.2s;
-    }
-
-    .fade-slide-leave-active {
-    transition: all 0.3s ease;
-    }
-
-    .fade-slide-enter-from {
-    opacity: 0;
-    transform: translateY(10px);
-    }
-
-    .fade-slide-leave-to {
-    opacity: 0;
-    transform: translateY(-10px);
-    }
