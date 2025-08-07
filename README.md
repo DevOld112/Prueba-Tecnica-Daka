@@ -35,8 +35,8 @@ npm run dev
    - **Vue 3** con Composition API
    - **Tailwind CSS v3** para estilos 
    - **Axios** para consumo de APIs
-   - **VueAwesomePaginate** para paginación
-   - **VueSpinner** para estados de carga
+   - **VueAwesomePaginate** libreria para paginación
+   - **VueSpinner** libreria para estados de carga
 
 ### 🎨 Diseño y UX
 
