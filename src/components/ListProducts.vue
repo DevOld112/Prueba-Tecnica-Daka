@@ -55,7 +55,8 @@ onMounted(async() => {
         <ProductCard
             v-for="product in paginatedProducts"
             :key="product.id"
-            :product="product"
+            :product="{ ...product, quantity: 0 }"
+
         />
     </TransitionGroup>
     

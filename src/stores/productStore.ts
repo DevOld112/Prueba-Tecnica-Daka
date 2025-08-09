@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
-import type { Category, DolarBCV, Monitor, Products } from '@/types'
+import { ref, computed, watch, inject } from 'vue'
+import type { Category, DolarBCV, Monitor, Products, ProductsCart, Toast } from '@/types'
 import { getCategories, getProducts } from '@/api/ProductsApi'
 import { exchangeRate, testExchange } from '@/helpers'
 
 export const useProductStore = defineStore('product', () => {
+
+  //Toast de notificacion
+  const toast = inject<Toast>('toast')
+
   // Variables Reactivas
   const allProducts = ref<Products[]>([]) 
   const favorites = ref<Products[]>([])
@@ -15,6 +19,9 @@ export const useProductStore = defineStore('product', () => {
   const itemsPerPage = ref(5)
   const exchangeCurrency = ref<DolarBCV>()
   const exchangeCurrency2 = ref <Monitor>()
+  const productsCart = ref<ProductsCart[]>([])
+  const isCartOpen = ref<boolean>(false)
+  const total = ref<number>(0)
   
   // Filtros
   const filterCategory = ref<string>('')
@@ -43,7 +50,18 @@ export const useProductStore = defineStore('product', () => {
   const getFavorites = computed(() => favorites.value)
   const totalItems = computed(() => filteredProducts.value.length)
   const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
-  const showExchange = computed(() => exchangeCurrency.value)
+  const showExchange = computed(() => exchangeCurrency.value) 
+
+  const totalUSD = computed(() => {
+  return productsCart.value.reduce((total, product) => {
+    return total + (product.price * product.quantity);
+  }, 0);
+});
+
+  const totalBsF = computed(() => {
+    const exchangeRate = exchangeCurrency2.value?.price || 1;
+    return totalUSD.value * exchangeRate;
+});
 
   const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value
@@ -82,6 +100,29 @@ export const useProductStore = defineStore('product', () => {
     localStorage.setItem('favorites', JSON.stringify(favorites.value));
   }
 
+  const addProductCart = (product:ProductsCart) =>{
+    if(productsCart.value.includes(product)){
+      productsCart.value[product.quantity++]
+    } else {
+        productsCart.value.push(product)
+        productsCart.value[product.quantity = 1]
+    }
+
+    localStorage.setItem('cartProducts', JSON.stringify(productsCart.value))
+
+    toast?.open({
+      message: 'Producto agregado correctamente',
+      type: 'success'
+    })
+
+}
+
+  const toggleCart = () => {
+    isCartOpen.value = !isCartOpen.value
+  }
+  
+
+
   const loadProducts = async () => {
     try {
       isLoading.value = true
@@ -90,6 +131,7 @@ export const useProductStore = defineStore('product', () => {
       categories.value = await getCategories()
       exchangeCurrency.value = await exchangeRate()
       exchangeCurrency2.value = await testExchange()
+      
     } catch (err) {
       error.value = err as Error
       console.error("Error loading products:", err)
@@ -99,16 +141,24 @@ export const useProductStore = defineStore('product', () => {
   }
 
     const loadFavorites = (): void => {
-    const saved = localStorage.getItem('favorites');
-    if (saved) {
-      favorites.value = JSON.parse(saved) as Products[];
-    }
+      const saved = localStorage.getItem('favorites');
+      if (saved) {
+        favorites.value = JSON.parse(saved) as Products[];
+      }
   };
+    
+    const loadCartProducts = (): void =>{
+      const saved = localStorage.getItem('cartProducts');
+      if(saved){
+        productsCart.value = JSON.parse(saved) as ProductsCart[]
+      }
+    }
 
   // Resto de acciones...
   const initialize = async () =>{ 
     await loadProducts()
     loadFavorites()
+    loadCartProducts()
   }
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages.value) {
@@ -127,12 +177,27 @@ const prevPage = () => {
   }
 }
 
+const updateQuantity = ({ id, quantity }: { id: number; quantity: number }) => {
+  const product = productsCart.value.find(product => product.id === id);
+  if (product) {
+    product.quantity = quantity;
+  }
+};
+
+const removeItem = (id: number) => {
+  productsCart.value = productsCart.value.filter(product => product.id !== id);
+};
+
+
+
   const refresh = () => loadProducts()
 
   // Watchers
   watch(allProducts, () => {
     currentPage.value = 1
   })
+
+
 
   return {
     // Variables reactivas
@@ -149,6 +214,9 @@ const prevPage = () => {
     maxPriceFilter,
     exchangeCurrency,
     exchangeCurrency2,
+    productsCart,
+    isCartOpen,
+    total,
     
     // Getters
     totalItems,
@@ -159,6 +227,10 @@ const prevPage = () => {
     averagePrice,
     showExchange,
     getFavorites,
+    totalUSD,
+    totalBsF,
+ 
+    
     
     // Acciones
     loadProducts,
@@ -169,6 +241,10 @@ const prevPage = () => {
     refresh,
     applyFilters,
     resetFilters,
-    buttonFavorites
+    buttonFavorites,
+    toggleCart,
+    updateQuantity,
+    removeItem,
+    addProductCart
   }
 })

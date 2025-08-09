@@ -8,6 +8,18 @@ export interface Products {
     rating:      Rating;
 }
 
+export interface ProductsCart {
+    id:          number;
+    title:       string;
+    price:       number;
+    description: string;
+    category:    Category;
+    image:       string;
+    rating:      Rating;
+    quantity:    number
+}
+
+
 export enum Category {
     Electronics = "electronics",
     Jewelery = "jewelery",
@@ -46,4 +58,9 @@ export interface Monitor {
     price_old:       number;
     symbol:          string;
     title:           string;
+}
+
+
+export interface Toast {
+    open(options: { message: string; type: 'success' | 'error' }): void;
 }
