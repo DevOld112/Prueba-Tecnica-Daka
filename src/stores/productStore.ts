@@ -182,10 +182,14 @@ const updateQuantity = ({ id, quantity }: { id: number; quantity: number }) => {
   if (product) {
     product.quantity = quantity;
   }
+
+  localStorage.setItem('cartProducts', JSON.stringify(productsCart.value))
 };
 
 const removeItem = (id: number) => {
   productsCart.value = productsCart.value.filter(product => product.id !== id);
+
+  localStorage.setItem('cartProducts', JSON.stringify(productsCart.value))
 };
 
 
